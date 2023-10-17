@@ -7,8 +7,6 @@ MASK30 = 3 << 28
 MASK6 = 0x3f
 MASK28 = 0xfffffff
 MASK32 = 0xffffffff
-K = 0x1123456789abcdef
-M = 0xaaaabbbbccccdddd
 
 def sbox(n, a):
     """
@@ -33,7 +31,7 @@ def S(m_clair):
     while i < 8:
         mot = m_clair & 63
         sortie = sbox(i, mot)
-        m_clait >>= 6
+        m_clair >>= 6
         tmp = result
         result = sortie << (4*i) | tmp
         i += 1
@@ -74,57 +72,60 @@ def CalculKi(cle):
         i += 1
     return (cle_i)
 
+def DES(M, cle):
+    """
+    effectue le standard DES
+    """
+    tempo = 0
+    i = 0
+    while i < 64:
+        tempo |= (((M >> (td.IP[i] -1)) & 1) << i)
+        i = i + 1
+    L = (tempo >> 32)
+    R = tempo & MASK32
+    i = 0
+    while i < 16 :
+        print(hex(L), hex(R))
+        Z = L
+        L = R
+        tempo = 0
+        j = 0
+        while j < 48:
+            b = td.E[j] -1
+            bit = (R >> b) & 1
+            tmp = tempo
+            tempo = tmp | (bit << j)
+            j += 1
+        print("e ", hex(tempo))
+        tempo ^= cle[i]
+        print("xor cle ", hex(tempo), " cle", hex(cle[i]))
+        tempo = S(tempo)
+        print("s ", hex(tempo))
+        
+        R = 0
+        j = 0
+        while j < 32:
+            b = td.P[j] - 1
+            bit = (tempo >> b) & 1
+            tmp = R
+            R = tmp | (bit << j)
+            j += 1
+        R ^= Z
+        print("################################################################################")
+        i = i + 1
+    print("ici",hex(L), hex(R))
+    L, R = R, L
+    O = 0
+    i = 0
+    print("ici",hex(L), hex(R))
+    nv_bloc = (R << 32) | L
+    while i < 64:
+        O |= (((nv_bloc >> (td.InvIP[i] -1)) & 1) << i)
+        i = i + 1
+    return hex(O)
+if __name__ == "__main__":
+    K = 0x1123456789abcdef
+    M = 0xaaaabbbbccccdddd
+    Ki = CalculKi(K)
+    print(DES(M, Ki))
 
-Ki = CalculKi(K)
-#
-#
-# Application de la Permutation IP sur le message M
-# le resultat est stocke dans tempo
-#
-# tempo = 0
-# i = 0
-# while i < 64:
-#    tempo |= (((M >> (tables_des.IP[i] -1)) & 1) << i)
-#      i = i + 1
-#
-# les 16 tours du DES
-# L = (tempo >> 32)
-# R = tempo & MASK32
-# i = 0
-# while i < 16 :
-#    Z = L
-#  L = R
-#
-#  # expansion de R via la table E
-#  # resultat stocke dans tempo
-#  tempo = 0
-#  j = 0
-#  while j < 48:
-#      # A COMPLETER
-#
-#  # ajout de la clef de tour
-#  tempo ^= Ki[i]
-#
-#  # action des boites S
-#  tempo = S(tempo);
-#
-#  # Application de la permutation P sur tempo
-#  # on stocke le resultat dans R
-#  R = 0
-#  j = 0
-#  while j < 32:
-#      # A COMPLETER
-#  R ^= Z
-#  i = i + 1
-#
-# echange final entre R et L
-# A COMPLETER
-#
-# Application de la Permutation IP^-1 sur (R16L16)
-# le resultat est stocke dans C
-# C = 0
-# i = 0
-# while i < 64:
-#    # A COMPLETER
-# print("Crypto = ",hex(C))
-#

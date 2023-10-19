@@ -1,5 +1,10 @@
 """
 implente le DES
+qui est un algorithme de chiffrement symetrique chiffrant par bloc de 64 bits.
+la cle est de longeur 56 bits ( 2**56 possibilites de cle)
+grace a cette cle, on genere 16 autres intermidiaires, chacune est utilisé pour
+chiffrer un bloc de donnee lors de chaque tour
+un tour = permutation + subsititution(sBox)
 """
 import tables_des as td
 

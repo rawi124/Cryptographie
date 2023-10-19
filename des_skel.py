@@ -57,9 +57,9 @@ def calcul_ki(cle):
     """
     genere les 16 cles intermidiaires
     """
-    PC1K = permutation(56, cle, td.PC1)
-    gauche = (PC1K >> 28) & MASK28
-    droite = PC1K & MASK28
+    permut_cle = permutation(56, cle, td.PC1)
+    gauche = (permut_cle >> 28) & MASK28
+    droite = permut_cle & MASK28
     cle_i = [0] * 16
     i = 0
     while i < 16:
@@ -74,31 +74,31 @@ def calcul_ki(cle):
     return cle_i
 
 
-def standard_des(M, cle):
+def standard_des(mot, cle):
     """
     effectue le standard DES
     """
-    tempo = permutation(64, M, td.IP)
-    L = (tempo >> 32)
-    R = tempo & MASK32
+    tempo = permutation(64, mot, td.IP)
+    left = (tempo >> 32)
+    right = tempo & MASK32
     i = 0
     while i < 16:
-        print(hex(L), hex(R))
-        Z = L
-        L = R
-        tempo = permutation(48, R, td.E)
+        print(hex(left), hex(right))
+        tmp = left
+        left = right
+        tempo = permutation(48, right, td.E)
         print("e ", hex(tempo))
         tempo ^= cle[i]
         print("xor cle ", hex(tempo), " cle", hex(cle[i]))
         tempo = boite(tempo)
         print("s ", hex(tempo))
-        R = permutation(32, tempo, td.P)
-        R ^= Z
+        right = permutation(32, tempo, td.P)
+        right ^= tmp
         print("################################################################################")
         i = i + 1
-    print("ici", hex(L), hex(R))
-    print("ici", hex(L), hex(R))
-    nv_bloc = (R << 32) | L
+    print("ici", hex(left), hex(right))
+    print("ici", hex(left), hex(right))
+    nv_bloc = (right << 32) | left
     return hex(permutation(64, nv_bloc, td.InvIP))
 
 

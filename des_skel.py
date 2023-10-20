@@ -84,31 +84,49 @@ def standard_des(mot, cle):
     effectue le standard DES
     """
     tempo = permutation(64, mot, td.IP)
-    left = (tempo >> 32)
+    #tempo = 0x8581d77c750e558a
+    left = (tempo >> 32) 
     right = tempo & MASK32
     i = 0
     while i < 16:
-        print(hex(left), hex(right))
+        #print(hex(left), hex(right))
+        print("LIRI",hex((left << 32) | right))
         tmp = left
         left = right
         tempo = permutation(48, right, td.E)
-        print("e ", hex(tempo))
+        #print("e ", hex(tempo))
         tempo ^= cle[i]
-        print("xor cle ", hex(tempo), " cle", hex(cle[i]))
+        #print("xor cle ", hex(tempo), " cle", hex(cle[i]))
         tempo = boite(tempo)
-        print("s ", hex(tempo))
+        #print("s ", hex(tempo))
         right = permutation(32, tempo, td.P)
         right ^= tmp
         print("################################################################################")
         i = i + 1
-    print("ici", hex(left), hex(right))
-    print("ici", hex(left), hex(right))
+    #print("ici", hex(left), hex(right))
+    #print("ici", hex(left), hex(right))
     nv_bloc = (right << 32) | left
     return hex(permutation(64, nv_bloc, td.InvIP))
 
+def challenge_q1(mot):
+    """
+    prend en entree un bloc R0L0 et effectue
+    la premiere iteration du schema de feistel
+    """
+    gauche = (mot >> 32) & MASK32
+    droite = mot & MASK32
+    #print("gauche : ", hex(gauche), " droite", hex(droite))
+    return gauche, droite
 
 if __name__ == "__main__":
     K = 0x1123456789abcdef
     M = 0xaaaabbbbccccdddd
     Ki = calcul_ki(K)
-    print(standard_des(M, Ki))
+    #print(standard_des(M, Ki))
+    #challenge_q1(0x321305e69f85761f)
+    sortie = 0xaf2e4defe93d97e1
+    entree = 0xef6b0deebd3cd2f5
+
+
+
+

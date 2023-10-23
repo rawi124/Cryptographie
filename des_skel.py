@@ -83,8 +83,8 @@ def standard_des(mot, cle):
     """
     effectue le standard DES
     """
-    tempo = permutation(64, mot, td.IP)
-    #tempo = 0x8581d77c750e558a
+    #tempo = permutation(64, mot, td.IP)
+    tempo = 0x8581d77c750e558a
     left = (tempo >> 32) 
     right = tempo & MASK32
     i = 0
@@ -108,16 +108,6 @@ def standard_des(mot, cle):
     nv_bloc = (right << 32) | left
     return hex(permutation(64, nv_bloc, td.InvIP))
 
-def challenge_q1(mot):
-    """
-    prend en entree un bloc R0L0 et effectue
-    la premiere iteration du schema de feistel
-    """
-    gauche = (mot >> 32) & MASK32
-    droite = mot & MASK32
-    #print("gauche : ", hex(gauche), " droite", hex(droite))
-    return gauche, droite
-
 if __name__ == "__main__":
     K = 0x1123456789abcdef
     M = 0xaaaabbbbccccdddd
@@ -126,6 +116,8 @@ if __name__ == "__main__":
     #challenge_q1(0x321305e69f85761f)
     sortie = 0xaf2e4defe93d97e1
     entree = 0xef6b0deebd3cd2f5
+    l = [0xef6b0deebd3cd2f5, 0xef2e18eefd7dd2f5]
+    #print(challenge(l[0], l[1]))
 
 
 

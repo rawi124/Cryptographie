@@ -79,46 +79,50 @@ def calcul_ki(cle):
     return cle_i
 
 
-def standard_des(mot, cle):
+def standard_des(mot, cle,crypt=True):
     """
     effectue le standard DES
     """
-    #tempo = permutation(64, mot, td.IP)
-    tempo = 0x8581d77c750e558a
+    tempo = permutation(64, mot, td.IP)
     left = (tempo >> 32) 
     right = tempo & MASK32
     i = 0
     while i < 16:
-        #print(hex(left), hex(right))
-        print("LIRI",hex((left << 32) | right))
         tmp = left
         left = right
         tempo = permutation(48, right, td.E)
-        #print("e ", hex(tempo))
-        tempo ^= cle[i]
-        #print("xor cle ", hex(tempo), " cle", hex(cle[i]))
+        tempo ^= cle[i] if crypt else cle[15-i]
         tempo = boite(tempo)
-        #print("s ", hex(tempo))
         right = permutation(32, tempo, td.P)
         right ^= tmp
-        print("################################################################################")
         i = i + 1
-    #print("ici", hex(left), hex(right))
-    #print("ici", hex(left), hex(right))
+    nv_bloc = (right << 32) | left
+    return permutation(64, nv_bloc, td.InvIP)
+
+def decrypt(mot, cle):
+    """
+    effectue le decrypt du standard DES
+    """
+    tempo = permutation(64, mot, td.IP)
+    left = (tempo >> 32)
+    right = tempo & MASK32
+    i = 15
+    while i >= 0 :
+        tmp = left
+        left = right
+        tempo = permutation(48, right, td.E)
+        tempo ^= cle[i]
+        tempo = boite(tempo)
+        right = permutation(32, tempo, td.P)
+        right ^= tmp
+        i = i - 1
     nv_bloc = (right << 32) | left
     return hex(permutation(64, nv_bloc, td.InvIP))
+
+
 
 if __name__ == "__main__":
     K = 0x1123456789abcdef
     M = 0xaaaabbbbccccdddd
-    Ki = calcul_ki(K)
-    #print(standard_des(M, Ki))
-    #challenge_q1(0x321305e69f85761f)
-    sortie = 0xaf2e4defe93d97e1
-    entree = 0xef6b0deebd3cd2f5
-    l = [0xef6b0deebd3cd2f5, 0xef2e18eefd7dd2f5]
-    #print(challenge(l[0], l[1]))
-
-
-
-
+    cles = calcul_ki(K)
+    print(decrypt(standard_des(M, cles), cles))

@@ -86,17 +86,39 @@ def eval_poly(P, b): #ne marche que pour poly de degree 2 ou superieur
         i += 1
   return eval
 
-def decomposePremiers(n):
-    listePremier = []
-    if n%2 == 0:
-        listePremier += [2]
-    while n%2 == 0:
-        n = n//2
-    i = 3
-    while n != 1 :
-        if n%i == 0 :
-            listePremier += [i]
-        while n % i == 0 :
-            n = n // i
-        i += 2
-    return listePremier
+def inverse(x,P):
+    degree_poly = len(bin(P))-3
+    nbr_elements = (1<<degree_poly) -1
+    alpha = table_log[x]
+    return alpha_table[nbr_elements-alpha]
+
+
+
+def multbyalpha(b,f): #b*alpha
+    y = b << 1 #add 0 a droite
+    n = len(bin(f)) - 3
+    if y & (1 << n): #if bit pf=1 mult depasse degre polynome so faire xor
+         y ^= f
+    return y
+    
+def multiplication(b,c,f): #b*c
+    S = 0
+    x = b
+    while c != 0:
+        bit = c & 1
+        if bit != 0:
+            S = S ^ x
+        x = multbyalpha(x,f)
+        c = c >> 1
+    return S
+
+def multplie(x, y, P):
+    r = len(bin(P))-3
+    r2=(1<<r)
+    if x == 0 or y == 0:
+        return 0
+    else:
+        u = log_table[x]
+        v = log_table[y]
+        s = (u+v)%(r2 - 1)
+    return alpha_table[s]

@@ -35,5 +35,3 @@ int main(int argc , char *argv[])
   gmp_printf("%Zd\n", y);
   return 0;
 }
-
-

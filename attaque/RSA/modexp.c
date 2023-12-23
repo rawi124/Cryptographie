@@ -4,6 +4,9 @@
 
 
 static void montg_red(mpz_t t, mpz_t T, mpz_t n, int r, mpz_t n1){
+  //effectue efficacement des operations de reduction modulaire
+  //c-a-d calculer le reste de la div d un nombre par un autre
+  //a mod b = a -[a//b] * b
   mpz_t temp1, temp2;
 
   mpz_inits(temp1, temp2,NULL);
@@ -25,6 +28,9 @@ static void montg_red(mpz_t t, mpz_t T, mpz_t n, int r, mpz_t n1){
 
 void modexp(mpz_t y, mpz_t x, mpz_t k, mpz_t n)
 {
+
+  //implente l algo d exp modulaire en utilisant l arithmetique de
+  //montgomery
   int r = mpz_sizeinbase(n,2)+1;
   int len =  mpz_sizeinbase(k,2);
   mpz_t R,n1,X,Y,neg;

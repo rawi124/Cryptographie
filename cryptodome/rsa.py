@@ -5,12 +5,21 @@ from Cryptodome.Util.number import inverse
 import math
 
 def get_e(phi_n):
+    """
+    cette fonction genere un e tel que 
+    e est premier avec phi_n et inferieur
+    a phi_n
+    """
     e = randrange(1, phi_n)
     while math.gcd(e, phi_n) != 1:
         e = randrange(1, phi_n)
     return e
 
 def get_d(e, phi_n):
+    """
+    e * d =1 mod (phi_n)
+    genere d pour satisfaire la relation ci-dessus
+    """
     return inverse(e, phi_n)
     
 p = 4171849679533027504677776769862406473833407270227837441302815640277772901915313574263597828843
